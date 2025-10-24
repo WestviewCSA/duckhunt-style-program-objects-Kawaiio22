@@ -1,7 +1,11 @@
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -16,24 +20,46 @@ import javax.swing.Timer;
 public class Frame extends JPanel implements ActionListener, MouseListener, KeyListener {
 	
 	//frame size
-	private int screenWidth = 900, screenHeight = 600;
-	private String title = "Duck Hunt";
+	private int screenWidth = 1000, screenHeight = 780; //resizing the frame, match background shape
+	private String title = "Duck Hunt"; //can change later
 	
-	
+	private int count = 3;
+	private int track = 0;
 	/**
 	 * Declare and instantiate (create) your objects here
 	 */
-	private Duck duckObject = new Duck();
+	public Duck duckObject = new Duck();
+	private house myHouse = new house();
+	private Background myBackground = new Background();
+	private Bush myBush = new Bush();
+	private Carrot carrotObject = new Carrot ();
+	private basket myBasket = new basket();
+	private shot3 myShot = new shot3();
+	private MyCursor cursor = new MyCursor();
+	private Tracker tracker = new Tracker();
 	
 	public void paint(Graphics pen) {
 		
 		//this line of code is to force redraw the entire frame
 		super.paintComponent(pen);
+		//background should be draw before the objects 
+		//or based on how you want to LAYER.
+		myBackground.paint(pen);
+		carrotObject.paint(pen);
+		
 		
 		//call paint for the object
 		//for objects, you call methods on them using the dot operator
 		//methods use always involve parenthesis
 		duckObject.paint(pen);
+		myBush.paint(pen);
+		myHouse.paint(pen);
+		myBasket.paint(pen);
+		myShot.paint(pen);
+		tracker.paint(pen);
+		cursor.paint(pen);
+	
+		
 		
 		
 		
@@ -62,6 +88,65 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	public void mousePressed(MouseEvent mouse) {
 	    // Runs when a mouse button is pressed down.
 	    // Example: You could start dragging an object here.
+		//System.out.println(mouse.getX() + ":" + mouse.getY());
+		
+	
+		boolean collision = carrotObject.checkCollision(mouse.getX(), mouse.getY());
+		if(collision == false){
+			count--;
+			if(count == 2) {
+				myShot.changePicture("shot2.png");
+			}
+			else if (count == 1){
+				myShot.changePicture("1shot.png");
+			}
+			else {
+				myShot.changePicture("gameover.png");
+
+				
+			}
+			
+		}
+		
+		if(collision == true) {
+			track++;
+			if(track == 1 && count > 0) {
+				tracker.changePicture("onecarrot.png");
+			}
+			else if(track ==2 && count > 0) {
+				tracker.changePicture("twocarrot.png");
+			}
+			else if(track == 3 && count > 0) {
+				tracker.changePicture("threecarrot.png");
+			}
+			else if(track == 4 && count > 0) {
+				tracker.changePicture("fourcarrot.png");
+			}
+			else if(track == 5 && count > 0) {
+				tracker.changePicture("fivecarrot.png");
+			}
+			else if(track == 6 && count > 0) {
+				tracker.changePicture("sixcarrot.png");
+			}
+			else if(track == 7 && count > 0) {
+				tracker.changePicture("sevencarrot.png");
+			}
+			else if(track == 8 && count > 0) {
+				tracker.changePicture("eightcarrot.png");
+			}
+			else if(track == 9 && count > 0) {
+				tracker.changePicture("ninecarrot.png");
+			}
+			else if(track == 10 && count > 0) {
+				tracker.changePicture("tencarrot.png");
+			}
+			else {
+				tracker.changePicture("nocarot.png");
+			}
+
+
+		}
+		
 	}
 
 	@Override
@@ -78,7 +163,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	public void keyPressed(KeyEvent key) {
 		
 		System.out.println("from keyPressed method:"+key.getKeyCode());
-		
+	
 	}
 
 	/*
@@ -127,6 +212,14 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		f.setLayout(new GridLayout(1,2));
 		f.addMouseListener(this);
 		f.addKeyListener(this);
+		
+		/*cursor icon code*/
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image image= toolkit.getImage("cursoragain.png");
+		Cursor a = toolkit.createCustomCursor(image, new Point(this.getX(),this.getY()), "");
+		this.setCursor(a);
+		
+		
 		Timer t = new Timer(16, this);
 		t.start();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
