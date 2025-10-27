@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -25,6 +26,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	
 	private int count = 3;
 	private int track = 0;
+	private int level = 1;
 	/**
 	 * Declare and instantiate (create) your objects here
 	 */
@@ -32,11 +34,21 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	private house myHouse = new house();
 	private Background myBackground = new Background();
 	private Bush myBush = new Bush();
-	private Carrot carrotObject = new Carrot ();
+	private Carrot carrotObject = new Carrot();
+	private Carrot2 carrot2 = new Carrot2();
 	private basket myBasket = new basket();
 	private shot3 myShot = new shot3();
 	private MyCursor cursor = new MyCursor();
 	private Tracker tracker = new Tracker();
+	private badCarrot mybadCarrot = new badCarrot();
+	
+	//Music
+	private Music crunchSound = new Music("crunch.wav", false);
+	private Music Theme = new Music("mainTheme.wav", false);
+	
+	private int totalScore = 0; //need to increment when collision happens
+	private int time = 30;
+	
 	
 	public void paint(Graphics pen) {
 		
@@ -52,15 +64,23 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		//for objects, you call methods on them using the dot operator
 		//methods use always involve parenthesis
 		duckObject.paint(pen);
-		myBush.paint(pen);
 		myHouse.paint(pen);
 		myBasket.paint(pen);
+		carrot2.paint(pen);
+		if(level >= 2) {
+			mybadCarrot.paint(pen);
+		}
 		myShot.paint(pen);
 		tracker.paint(pen);
 		cursor.paint(pen);
-	
+		myBush.paint(pen);
 		
-		
+		Font f = new Font("Sego UI", Font.PLAIN, 38);
+		pen.setFont(f);
+		pen.setColor(Color.black); //change based on background color
+		pen.drawString("Score: "+ totalScore, 750, 50); //totalScore is a variable at the top
+		//pen.drawString("" + time, 310, 510);
+		pen.drawString("Level: "+level, 10,50);
 		
 		
 	}
@@ -90,10 +110,13 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	    // Example: You could start dragging an object here.
 		//System.out.println(mouse.getX() + ":" + mouse.getY());
 		
-	
+		
 		boolean collision = carrotObject.checkCollision(mouse.getX(), mouse.getY());
-		if(collision == false){
+		boolean collision2 = carrot2.checkCollision(mouse.getX(),mouse.getY());
+		boolean badCollision = mybadCarrot.checkCollision(mouse.getX(), mouse.getY());
+		if(collision == false && collision2 == false ||badCollision == true){
 			count--;
+			totalScore--;
 			if(count == 2) {
 				myShot.changePicture("shot2.png");
 			}
@@ -102,14 +125,23 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			}
 			else {
 				myShot.changePicture("gameover.png");
-
+				myBush.changePicture("gameoverbg.png");
+				myBush.setScale(1,1);
+				myBush.setLocation(0, 0);
 				
 			}
 			
 		}
 		
-		if(collision == true) {
+//		if(badCollision == true) {
+//			totalScore--;
+//		}
+//		
+		if(collision == true || collision2 == true) {
 			track++;
+			totalScore++;
+			//make the music file play each time
+			this.crunchSound.play();
 			if(track == 1 && count > 0) {
 				tracker.changePicture("onecarrot.png");
 			}
@@ -139,6 +171,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			}
 			else if(track == 10 && count > 0) {
 				tracker.changePicture("tencarrot.png");
+				level++;
 			}
 			else {
 				tracker.changePicture("nocarot.png");
@@ -204,6 +237,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	
 	
 	public Frame() {
+		this.Theme.play();
 		JFrame f = new JFrame(title);
 		f.setSize(new Dimension(screenWidth, screenHeight));
 		f.setBackground(Color.blue);
