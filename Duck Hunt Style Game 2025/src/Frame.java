@@ -45,7 +45,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	//Music
 	private Music crunchSound = new Music("crunch.wav", false);
 	private Music Theme = new Music("mainTheme.wav", false);
-	
+	private Music levelUp = new Music("levelUp.wav", false);
 	private int totalScore = 0; //need to increment when collision happens
 	private int time = 30;
 	
@@ -116,7 +116,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		boolean badCollision = mybadCarrot.checkCollision(mouse.getX(), mouse.getY());
 		if(collision == false && collision2 == false ||badCollision == true){
 			count--;
-			totalScore--;
+			//totalScore--;
 			if(count == 2) {
 				myShot.changePicture("shot2.png");
 			}
@@ -170,9 +170,46 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				tracker.changePicture("ninecarrot.png");
 			}
 			else if(track == 10 && count > 0) {
-				tracker.changePicture("tencarrot.png");
+				tracker.changePicture("tencarrotlevel1.png");
 				level++;
+				this.levelUp.play();
 			}
+			else if(track == 11 && count > 0) {
+				tracker.changePicture("onecarrot.png");
+			}
+			else if(track == 12 && count > 0) {
+				tracker.changePicture("twocarrot.png");
+			}
+			else if(track == 13 && count > 0) {
+				tracker.changePicture("threecarrot.png");
+			}
+			else if(track == 14 && count > 0) {
+				tracker.changePicture("fourcarrot.png");
+			}
+			else if(track == 15 && count > 0) {
+				tracker.changePicture("fivecarrot.png");
+			}
+			else if(track == 16 && count > 0) {
+				tracker.changePicture("sixcarrot.png");
+			}
+			else if(track == 17 && count > 0) {
+				tracker.changePicture("sevencarrot.png");
+			}
+			else if(track == 18 && count > 0) {
+				tracker.changePicture("eightcarrot.png");
+			}
+			else if(track == 19 && count > 0) {
+				tracker.changePicture("ninecarrot.png");
+			}
+			else if(track == 20 && count > 0) {
+				tracker.changePicture("tencarrot.png");
+				myBush.changePicture("finished.png");
+				myBush.setScale(1,1);
+				myBush.setLocation(0, 0);
+				
+				
+			}
+			
 			else {
 				tracker.changePicture("nocarot.png");
 			}

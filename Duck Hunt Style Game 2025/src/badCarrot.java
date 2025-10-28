@@ -161,7 +161,7 @@ public class badCarrot {
         if(!hasFallen && y>= 780 && vy > 0 && vx != 0) {
         	vy *= -1;
         }
-        System.out.println("y = " + y + ", vy = " + vy);
+    //    System.out.println("y = " + y + ", vy = " + vy);
         
         }
     
